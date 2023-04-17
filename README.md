@@ -5,6 +5,7 @@ We predict multimodal trajectory with probabilites.
 # Usage
 
 ## Data setup
+### Dataset
 The dataset folder must have the following structure:
 
     - dataset
@@ -14,7 +15,8 @@ The dataset folder must have the following structure:
         - validation_folder 
 We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
 ''' git clone  https://github.com/FGiuliari/Trajectory-Transformer '''
-
+### Pre-Trained 
+[Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
 ## Main file
 To train and test just run the *GMM_Transformer.ipynb* with different configuration from *config.py*
 
@@ -28,7 +30,7 @@ Including the number of heads of transformer,number of batchs, path of model (to
 
 *class Args*: contains mainly arguments related to dataset choice and mode (train/test), visuzlize output or not and so on.
 
-[Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
+
 
 
 ## SOURCES
