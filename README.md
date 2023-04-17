@@ -16,6 +16,11 @@ The dataset folder must have the following structure:
 We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
 ''' git clone  https://github.com/FGiuliari/Trajectory-Transformer '''
 ### Pre-Trained 
+Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE and FDE related
+MODEL without roman numbering is combination of GMM and MSQ loss
+MODEL II is mdn loss only 
+MODEL III is mdn and msq loss
+
 [Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
 ## Main file
 To train and test just run the *GMM_Transformer.ipynb* with different configuration from *config.py*
@@ -44,8 +49,7 @@ Including the number of heads of transformer,number of batchs, path of model (to
 
 
 
-MODEL II is mdn loss only 
-MODEL III is mdn and msq loss
+
 
 
 
