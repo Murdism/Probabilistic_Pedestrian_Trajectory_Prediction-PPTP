@@ -37,6 +37,17 @@ Including the number of heads of transformer,number of batchs, path of model (to
 - *class Args*: contains mainly arguments related to dataset choice and mode (train/test), visuzlize output or not and so on.
 
 
+## Training
+- *Train.py* : contains functions used for training. 
+- To Train *class CFG* and *class Args* can be edited. 
+  - *class CFG* : num_heads,num_encoders,num_epochs_num_batchs,num_features ...etc.
+  - *class Args* : change mode to 'train', 
+## Testing
+- *Test.py* : contains functions used for testing.
+- To test *class CFG* and *class Args* can be edited. 
+  - *class CFG* : num_heads,num_encoders,num_epochs_num_batchs,num_features ...etc.
+  - *class Args* : change mode to 'test', use model_path to use pre-trained model 
+
 
 
 # SOURCES
