@@ -12,7 +12,7 @@ The dataset folder must have the following structure:
         - train_folder
         - test_folder
         - validation_folder 
-We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py" to 
+We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
 ''' git clone  https://github.com/FGiuliari/Trajectory-Transformer '''
 
 ## Main file
