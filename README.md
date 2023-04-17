@@ -14,6 +14,7 @@ The dataset folder must have the following structure:
         - test_folder
         - validation_folder 
 We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
+
 ''' git clone  https://github.com/FGiuliari/Trajectory-Transformer '''
 ### Pre-Trained 
 Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE and FDE related.
