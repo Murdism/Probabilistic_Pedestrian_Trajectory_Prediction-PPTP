@@ -29,12 +29,12 @@ To train and test just run the *GMM_Transformer.ipynb* with different configurat
 ### config.py
 Most parameters including your choice to test or train can be set up on this file:
 
-It has two classes
+It has two classes:
 
-*class CFG*: contains main parameters that are used to train the model.
+- *class CFG*: contains main parameters that are used to train the model.
 Including the number of heads of transformer,number of batchs, path of model (to be saved)
 
-*class Args*: contains mainly arguments related to dataset choice and mode (train/test), visuzlize output or not and so on.
+- *class Args*: contains mainly arguments related to dataset choice and mode (train/test), visuzlize output or not and so on.
 
 
 
