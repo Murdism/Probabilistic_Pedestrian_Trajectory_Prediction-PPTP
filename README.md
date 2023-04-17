@@ -58,4 +58,4 @@ Including the number of heads of transformer,number of batchs, path of model (to
 
 [Train](https://towardsdatascience.com/how-to-code-the-transformer-in-pytorch-24db27c8f9ec)
 
-[ELU](https://deeplearninguniversity.com/elu-as-an-activation-function-in-neural-networks/) activation and Laplacian Distribution
+[ELU](https://deeplearninguniversity.com/elu-as-an-activation-function-in-neural-networks/) 
