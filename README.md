@@ -23,7 +23,7 @@ Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE an
 - MODEL III is mdn and msq loss
 
 [Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
-## Main file
+## Configuration 
 To train and test just run the *GMM_Transformer.ipynb* with different configuration from *config.py*
 
 ### config.py
