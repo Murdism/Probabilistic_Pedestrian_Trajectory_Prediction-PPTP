@@ -25,6 +25,7 @@ It has two classes
 
 *class CFG*: contains main parameters that are used to train the model.
 Including the number of heads of transformer,number of batchs, path of model (to be saved)
+
 *class Args*: contains mainly arguments related to dataset choice and mode (train/test), visuzlize output or not and so on.
 
 [Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
