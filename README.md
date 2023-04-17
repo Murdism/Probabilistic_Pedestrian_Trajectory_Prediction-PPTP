@@ -18,9 +18,9 @@ We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
 ### Pre-Trained 
 Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE and FDE related.
 
-MODEL without roman numbering is combination of GMM and MSQ loss
-MODEL II is mdn loss only 
-MODEL III is mdn and msq loss
+- MODEL without roman numbering is combination of GMM and MSQ loss
+- MODEL II is mdn loss only 
+- MODEL III is mdn and msq loss
 
 [Download Pre-Trained] (https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
 ## Main file
