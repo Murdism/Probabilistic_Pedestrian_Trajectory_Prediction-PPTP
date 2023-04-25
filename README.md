@@ -3,6 +3,24 @@ The main task of this code is to predict the trajectory of a pedestrian.
 We predict multimodal trajectory with probabilites.
 
 # Usage
+## Requirements 
+In this project we use *python 3.10.9* and *pytorch 1.12.1 with cuda 10.2.1 (cudnn 7.6.5)*.
+
+**Note**: If there is no GPU or no CUDA, change the device argument to cpu in the config file.  
+
+Other requirements can be found in the requirements file.  
+
+First you need to create an environment (Conda is used here):
+
+```conda create -n env_name python==3.10.9```  
+
+Then activate the environment:
+
+```conda activate env_name```  
+
+Finally, to install the requirements use:
+
+```pip install requirements.txt ```
 
 ## Data setup
 ### Dataset

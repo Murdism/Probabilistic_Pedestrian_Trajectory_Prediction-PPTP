@@ -1,20 +1,17 @@
-
 import numpy as np
 import torch
 import torch.nn as nn 
 import math
 from torch import nn, Tensor
-import pandas as pd
 import pickle
 from config import CFG,Args
+from matplotlib import pyplot as plt
 import os
 
 # Set up 
 setup = CFG()
 
-from matplotlib import pyplot as plt
-import numpy as np
-import numpy as np
+
 def traj_err(truth,pred,last=11):
         ade_sum = 0
         fde_sum = 0
@@ -126,26 +123,6 @@ def visualize_preds_old (src_trajs,batch_gts,candidate_trajs):
                 plt.ylim((0, 15))
             plt.legend(labels,loc="upper right")
             plt.show()
-# Functions used to calculate error
-def ADE_Old(pred,truth): 
-    counter=0
-    sum=0
-    pred = pd.DataFrame(pred.cpu().numpy())
-    truth = pd.DataFrame(truth.cpu().numpy())
-    print(pred.shape)
-    for i in range(len(pred)):
-        half=int(len(pred[i])/2)
-        for j in range (half):
-
-            a = np.array((pred[i][j] , pred[i][half+j]))
-            b = np.array((truth.iloc[i][j] , truth.iloc[i][half+j]))
-
-            dist = np.linalg.norm(a-b)
-            sum+=dist
-            counter+=1
-            #print("Distance between",a," and ",b," is: ",dist)
-
-    return (sum/counter)
 def FDE_Single(pred,truth): 
     counter=0
     sum=0

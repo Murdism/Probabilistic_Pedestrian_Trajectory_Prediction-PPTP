@@ -1,10 +1,6 @@
 from sklearn.cluster import DBSCAN
 import numpy as np
 import math
-
-from sklearn.cluster import DBSCAN
-import numpy as np
-import math
 class TreeNode:
     def __init__(self, value, weight, max,level=0):
         self.value = value
