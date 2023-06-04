@@ -34,7 +34,7 @@ def Bivariate(pi,sigma_x,sigma_y, mu_x , mu_y,input,device = device_loss):
         y = y.unsqueeze(dim=1).to(device)
         # print("Num of Dims is 2 : ",input.shape)
     # make |mu|=K copies of y, subtract mu, divide by sigma
-    #print("Input: ",input.shape ,"\nX: ",x.shape,"\nY: ",y.shape,"\nMu_x : ",mu_x.shape,"\nMu_y : ",mu_y.shape)
+    #print("Input: ",input.shape ,"\nX: ",x.shape,"\nY: ",y.shape,"\nMu_x : ",mu_x.shape,"\nMu_y : ",mu_y.shape,"\nSigma_x : ",sigma_x.shape)
     result_x = torch.square((x.expand_as(mu_x) - mu_x) * torch.reciprocal(sigma_x))
     result_y = torch.square((y.expand_as(mu_y) - mu_y) * torch.reciprocal(sigma_y))
     

@@ -12,6 +12,54 @@ import os
 setup = CFG()
 
 
+def visualize_preds_only(src_trajs,candidate_trajs,candidate_weights):
+    for src_batch,candidate_batch,candidate_weight in zip(src_trajs,candidate_trajs,candidate_weights):
+            for sample_src,sample_traj,sample_weight in zip(src_batch,candidate_batch,candidate_weight):
+            
+                fig = plt.figure(1)	#identifies the figure 
+                plt.title(" Predictions ", fontsize='16',)	#title
+                plt.scatter(sample_src[:,0],sample_src[:,1],color='Black',label ='Observed trajectory')
+                # plt.scatter(sample_gt[:,0],sample_gt[:,1],color='Red',label ='Ground truth')	#plot the points
+
+                length = len(sample_traj)
+                # print(sample_traj)
+                clr = ['Green','Blue','Orange','yellow','brown','cyan']
+                colors = clr[:length]
+                # print("clr = ",length,"colors: ",colors)
+
+                i = 0
+                sum_weights = 0
+                probs_list = []
+                label_list = []
+                
+
+                for traj,cl,wgt in zip(sample_traj,colors,sample_weight):
+                    i+=1
+                    values = np.array(traj)
+                    label_name = 'Pred_' + str(i) + " prob =  " +  str(round((wgt[0]*100), 2)) + " %"
+                    # sum_weights += weight
+                    # probs_list.append(weight)
+                    # label_list.append(label_name)
+
+                    # print("weight: ",traj[1])
+                    plt.scatter(values[:,0],values[:,1],color=cl,label=label_name)
+            
+                # probs_list = probs_list/sum_weights
+                # print("probs_list: ",probs_list)
+                # pred_labels = [(label_name + str(round((prob[0]*100), 2)) + " %") for label_name,prob in zip(label_list,probs_list) ]
+                # labels = ['Observed trajectory','Ground truth'] + pred_labels
+        
+
+                if(Args.dataset_name=='hotel'):
+                    plt.xlim((-3, 8))
+                    plt.ylim((-10, 8))
+                else:
+                    plt.xlim((0, 15))
+                    plt.ylim((0, 15))
+                # plt.legend(labels,loc="upper right")
+                plt.legend()
+                plt.show()
+
 def traj_err(truth,pred,last=11):
         ade_sum = 0
         fde_sum = 0
@@ -26,7 +74,7 @@ def traj_err(truth,pred,last=11):
                         fde_counter+=1
                 ade_counter+=1
         return (ade_sum/ade_counter),(fde_sum/fde_counter)
-def visualize_preds (src_trajs,batch_gts,candidate_trajs):
+def visualize_preds (src_trajs,batch_gts,candidate_trajs,candidate_weights):
     for src_batch,gt_batch,candidate_batch,candidate_weight in zip(src_trajs,batch_gts,candidate_trajs,candidate_weights):
         for sample_src,sample_gt,sample_traj,sample_weight in zip(src_batch,gt_batch,candidate_batch,candidate_weight):
         
@@ -509,9 +557,12 @@ class early_save_stop:
             print("Change in Validation FDE: ",(delta_FDE))
             
             if(self.previous_epoch > 0):
-                 old_path =  CFG.PATH +str(self.previous_epoch)+'.pt'
-                 os.remove(old_path)
+                old_path =  CFG.PATH +str(self.previous_epoch)+'.pt'
+                old_path_pth =  CFG.PATH +str(self.previous_epoch)+'.pth'
+                os.remove(old_path)
+                os.remove(old_path_pth)
             torch.save(model, CFG.PATH +str(epoch)+'.pt')
+            torch.save(model.state_dict(), CFG.PATH +str(epoch)+'.pth')
             print("Validation: ",validation_loss)
             print("Model saved!")
 

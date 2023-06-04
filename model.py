@@ -361,7 +361,6 @@ class Transformer_MDN(nn.Module):
 
 class Attention_GMM(nn.Module):
     def __init__(self,
-        device,
         in_features,
         out_features,
         num_heads,
@@ -376,7 +375,7 @@ class Attention_GMM(nn.Module):
         actn = "gelu"
         ):
             super(Attention_GMM, self).__init__()
-            self.device = device
+            # self.device = device
             self.num_heads = num_heads
             self.num_encoder_layers = num_encoder_layers
             self.num_decoder_layers = num_decoder_layers
@@ -710,7 +709,173 @@ class Attention_GMM_Encoder(nn.Module):
         return  pi, sigma_x,sigma_y, mu_x ,mu_y,decoder_output
     
 
+class Attention_GMM_With_Device(nn.Module):
+    def __init__(self,
+        device,
+        in_features,
+        out_features,
+        num_heads,
+        num_encoder_layers,
+        num_decoder_layers,
+        embedding_size,
+        n_gaussians = 5,
+        n_hidden = 10,
+        dropout=0.2,
+        max_length = 12,
+        batch_first = True,
+        actn = "gelu"
+        ):
+            super(Attention_GMM, self).__init__()
+            self.device = device
+            self.num_heads = num_heads
+            self.num_encoder_layers = num_encoder_layers
+            self.num_decoder_layers = num_decoder_layers
+            self.max_len = max_length
+            self.input_features = in_features
+            self.output_features = out_features
+            self.dim_feedforward_encoder = 2048
+            self.dim_feedforward_decoder = 2048
+            self.out_length = max_length
+            self.d_model= embedding_size # selected
+            self.dropout_encoder = dropout
+            self.dropout_decoder = dropout
+            self.dropout_pos_enc = dropout
+            # self.dropout = dropout_p
+            self.gaussians =  n_gaussians
+            self.hidden = n_hidden
+            self.ndim = 2
+            self.mdn_weight =torch.tensor(0.5)
+            # self.mdn_weight = nn.Parameter(torch.tensor(0.5),requires_grad=True)
+            #self.mdn_weight = nn.Parameter(torch.tensor([0.5]),requires_grad=True).to(device)
+        
 
+
+            # Positional Encoding
+            self.positional_encoding_layer = PositionalEncoding(
+                d_model=self.d_model,
+                dropout=self.dropout_pos_enc,
+                max_len = self.max_len,
+                batch_first = batch_first
+                )
+
+            # Creating the  linear layers needed for the model
+
+            self.encoder_input_layer = Linear_Embeddings(self.input_features, self.d_model) 
+            self.decoder_input_layer = Linear_Embeddings(self.output_features, self.d_model)   
+
+
+            # Stack the encoder layer n times in nn.TransformerDecoder
+            # The encoder layer used in the paper is identical to the one used by
+            # Vaswani et al (2017) on which the PyTorch module is based.
+            self.encoder_layer = nn.TransformerEncoderLayer(
+                d_model=self.d_model,
+                nhead=self.num_heads, 
+                dim_feedforward=self.dim_feedforward_encoder,
+                dropout=self.dropout_encoder,
+                batch_first=batch_first,
+                activation=actn
+                )
+
+
+            self.encoder = nn.TransformerEncoder(
+                encoder_layer =  self.encoder_layer,
+                num_layers = self.num_encoder_layers
+                )
+            # Create the decoder layer
+            self.decoder_layer = nn.TransformerDecoderLayer(
+                d_model=self.d_model,
+                nhead=self.num_heads, 
+                dim_feedforward = self.dim_feedforward_decoder,
+                dropout = self.dropout_decoder,
+                batch_first=batch_first,   
+                activation=actn
+            )
+
+            self.decoder = nn.TransformerDecoder(
+                decoder_layer = self.decoder_layer,
+                num_layers=self.num_decoder_layers
+                )
+
+
+            self.embedding_sigma = nn.Sequential(
+            nn.Linear(self.d_model,self.hidden),
+            nn.ELU(),#nn.GELU(),#nn.LeakyReLU(), #nn.GELU(),#nn.ReLU(),
+            nn.Linear(self.hidden,self.hidden//2),
+            nn.ELU(),
+            nn.Linear(self.hidden//2,self.hidden//4),
+            nn.ELU()#nn.GELU(),#nn.LeakyReLU(),#nn.GELU(),#nn.ReLU(),
+            )
+            self.embedding_mue = nn.Sequential(
+            nn.Linear(self.d_model,self.hidden),
+            nn.ELU(),#nn.GELU(),#nn.LeakyReLU(), #nn.GELU(),#nn.ReLU(),
+            nn.Linear(self.hidden,self.hidden//2),
+            nn.ELU(),
+            nn.Linear(self.hidden//2,self.hidden//4),
+            nn.ELU()#nn.GELU(),#nn.LeakyReLU(),#nn.GELU(),#nn.ReLU(),
+            )
+
+            self.pis = nn.Sequential(
+            nn.Linear(self.d_model,self.hidden),
+            nn.ELU(),
+            nn.Linear(self.hidden,self.hidden//2),
+            nn.ELU(),#nn.GELU(),#nn.LeakyReLU(), #nn.GELU(),#nn.ReLU(),
+            nn.Linear(self.hidden//2,self.hidden//4),
+            nn.ELU(),
+            nn.Linear(self.hidden//4,self.gaussians)
+            #nn.Softmax()
+            )
+
+            
+            self.hidden_hid = self.hidden//4
+            # self.pis = nn.Linear(self.hidden_hid,self.gaussians).to(device)
+            self.sigma_x = nn.Linear(self.hidden_hid, self.gaussians)
+            self.sigma_y = nn.Linear(self.hidden_hid, self.gaussians)
+            self.mu_x = nn.Linear(self.hidden_hid, self.gaussians)
+            self.mu_y = nn.Linear(self.hidden_hid, self.gaussians)
+
+    
+    def forward(self, src: torch.Tensor, tgt: torch.Tensor, src_mask: torch.Tensor=None, 
+                tgt_mask: torch.Tensor=None) -> torch.Tensor:
+        # Embedding 
+        encoder_embed = self.encoder_input_layer(src).to(device)
+        encoder_embed = self.positional_encoding_layer(encoder_embed).to(device) 
+
+        # src shape: [batch_size, enc_seq_len, dim_val]
+        encoder_out = self.encoder(src=encoder_embed).to(device)
+
+        # Pass decoder input through decoder input layer
+        decoder_embed = self.decoder_input_layer(tgt).to(device)
+        decoder_output = self.positional_encoding_layer(decoder_embed).to(device) 
+
+        # Pass throguh decoder - output shape: [batch_size, target seq len, dim_val]
+        decoder_output = self.decoder(
+            tgt=decoder_output,
+            memory=encoder_out,
+            tgt_mask=tgt_mask,
+            memory_mask=src_mask
+            ).to(device)
+
+        #mdn_embeded = self.embedding_mdn(decoder_output).to(device)
+        sigmax_embeded = self.embedding_sigma(decoder_output).to(device)
+        sigmay_embeded = self.embedding_sigma(decoder_output).to(device)
+        muex_embeded = self.embedding_mue(decoder_output).to(device)
+        muey_embeded = self.embedding_mue(decoder_output).to(device)
+
+        # Calculate PI
+        pi = self.pis(decoder_output).to(device)
+        pi = nn.functional.softmax(pi, -1)
+
+        # Calculate Sigmas
+        sigma_x = torch.Tensor(torch.exp(self.sigma_x(sigmax_embeded))).to(device)
+        sigma_y = torch.Tensor(torch.exp(self.sigma_x(sigmay_embeded))).to(device)
+
+        mu_x = torch.Tensor(self.mu_x(muex_embeded)).to(device)
+        mu_y = torch.Tensor(self.mu_y(muey_embeded)).to(device)
+       
+        #result = torch.Tensor(decoder_output)
+
+        return  pi, sigma_x,sigma_y, mu_x ,mu_y,decoder_output
+  
 if __name__ == "__main__":
      # Train transformer only
     in_features = 2

@@ -33,6 +33,12 @@ The dataset folder must have the following structure:
         - validation_folder 
 We use part of the dataloader in Trajectory-Transformer,"baselineUtils.py"
 
+The training data input has shape *Num_batchs,Batch_size,obs_traj_length,num_features*.
+The obs_traj_length is set to 8 by default and the number of features can be changed based on preference in the config file.
+The number of features changes due to preprocessing, the original input has two features x and y.   
+
+The output has shape *Num_batchs,Batch_size,obs_traj_length,num_features*. Here num_features is 2; like the input.
+
 ``` git clone  https://github.com/FGiuliari/Trajectory-Transformer ```
 ### Pre-Trained 
 Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE and FDE related.

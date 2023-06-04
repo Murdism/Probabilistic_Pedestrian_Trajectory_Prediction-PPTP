@@ -5,7 +5,7 @@ import numpy as np
 import math
 from torch.autograd import Variable # storing data while learning
 from loss import mdn_loss_fn,pairwise_distance,Mean_squared_distance
-from config import CFG
+from config import CFG,Args
 from utils import create_tgt,generate_square_mask,ADE,subsequent_mask,early_save_stop
 from baselineUtils import distance_metrics
 from tqdm import tqdm
@@ -18,7 +18,7 @@ device_train = CFG.device
 batch_size = CFG.batch_size
 # print(f"Using {device} device")
 
-def train_attn_mdn(train_dl,val_dl,test_dl, model, optim,add_features = False,mixtures = 3,device=device_train, epochs=20,enc_seq = 8,real_coords =False,dec_seq=12,post_process= True,normalized ='True', mode='feed',loss_mode ='combined',mean=0,std=0):
+def train_attn_mdn(train_dl,val_dl,test_dl, model, optim,add_features = False,mixtures = 8,device=device_train, epochs=20,enc_seq = 8,real_coords =False,dec_seq=12,post_process= True,normalized ='True', mode='feed',loss_mode ='combined',mean=0,std=0):
     early_stop = early_save_stop()
     encoder_seq_len = enc_seq
     decoder_seq_len = dec_seq  
@@ -176,7 +176,7 @@ def train_attn_mdn(train_dl,val_dl,test_dl, model, optim,add_features = False,mi
 
                 if(loss_mode=='mdn'):
                     #loss_mdn 
-                    loss_val = mdn_loss_fn(pi, sigma_x,sigma_y, mu_x , mu_y,y_val,mixtures,device)
+                    loss_val = mdn_loss_fn(pi_val, sigma_x_val,sigma_y_val, mu_x_val , mu_y_val,y_val,mixtures,device)
                     
                 elif(loss_mode=='combined'):
                     loss_val_mdn = mdn_loss_fn(pi_val, sigma_x_val,sigma_y_val, mu_x_val , mu_y_val,y_val,mixtures,device)
@@ -225,6 +225,11 @@ def train_attn_mdn(train_dl,val_dl,test_dl, model, optim,add_features = False,mi
         #mad_test , fad_test,_,_,mdn_results,avg_mad,avg_fad= test_mdn(test_dl, model,device,add_features = add_features,mixtures=mixtures,enc_seq = 8,dec_seq=12, mode='feed',loss_mode ='mdn',mean=mean,std=std)
         # test_mad.append(avg_mad)
         # test_fad.append(avg_fad)
+        # Test the model
+        if Args.show_test:
+            print('----- Test -----')
+            batch_preds,batch_gts,avg_mad,avg_fad,candidate_trajs,candidate_weights,best_candiates,src_trajs = test_mdn(test_dl, model,device,add_features = add_features,mixtures=mixtures,enc_seq = 8,dec_seq=12, mode='feed',loss_mode ='mdn',mean=mean,std=std)
+            print('----- END -----')
 
         # if (early_stop.stop):
         #     print("Early stopping activated!")
