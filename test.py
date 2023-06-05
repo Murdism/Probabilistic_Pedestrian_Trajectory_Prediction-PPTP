@@ -55,8 +55,8 @@ def test_mdn(test_dl, model,device = device_test,sample='True',add_features = Fa
                 target_val=(val_batch['trg'][:,:-1,2:4].to(device)-mean.to(device))/std.to(device)
                 y_val = (val_batch['trg'][:, :, 2:4].to(device)-mean.to(device))/std.to(device)
 
-                input_valc = torch.sqrt(torch.square(val_batch['src'][:,1:,2].to(device)) + torch.square(val_batch['src'][:,1:,3].to(device))).unsqueeze(-1)
-                input_val = torch.cat((inp_val,input_valc),-1)
+                # input_valc = torch.sqrt(torch.square(val_batch['src'][:,1:,2].to(device)) + torch.square(val_batch['src'][:,1:,3].to(device))).unsqueeze(-1)
+                # input_val = torch.cat((inp_val,input_valc),-1)
 
             else :
                 inp_val = val_batch['src'][:,1:,2:4].to(device)
@@ -225,7 +225,7 @@ def inference_realtime(test_dl, model,device = device_test,sample='True',add_fea
     with torch.no_grad():
         model.eval()
         gts_ev,batch_preds,batch_gts,src_ev = [], [] , [],[]
-        candidate_trajs,best_candiates,src_trajs,candidate_weights = [],[],[],[]
+        candidate_trajs,best_candiates,src_trajs,candidate_weights,best_candiates_weights = [],[],[],[],[]
         sum_mad_best,sum_fad_best = [],[]
         epoch_val_loss = 0
         epoch_val_loss_combined = 0
@@ -243,8 +243,8 @@ def inference_realtime(test_dl, model,device = device_test,sample='True',add_fea
                 # target_val=(val_batch['trg'][:,:-1,2:4].to(device)-mean.to(device))/std.to(device)
                 # y_val = (val_batch['trg'][:, :, 2:4].to(device)-mean.to(device))/std.to(device)
 
-                input_valc = torch.sqrt(torch.square(val_batch[:,1:,2].to(device)) + torch.square(val_batch[:,1:,3].to(device))).unsqueeze(-1)
-                input_val = torch.cat((inp_val,input_valc),-1)
+                # input_valc = torch.sqrt(torch.square(val_batch[:,1:,2].to(device)) + torch.square(val_batch[:,1:,3].to(device))).unsqueeze(-1)
+                # input_val = torch.cat((inp_val,input_valc),-1)
 
             else :
                 inp_val = val_batch[:,1:,2:4].to(device)
@@ -292,6 +292,7 @@ def inference_realtime(test_dl, model,device = device_test,sample='True',add_fea
             candidate_trajs.append(batch_trajs)
             candidate_weights.append(batch_weights)
             best_candiates.append(best_trajs)
+            best_candiates_weights.append(best_weights)
             src_trajs.append(cluster_src)
 
 
@@ -309,7 +310,7 @@ def inference_realtime(test_dl, model,device = device_test,sample='True',add_fea
                 batch_pred = batch_pred[:, :,:].cumsum(1) + val_batch['src'][:, -1:,0:2].cpu().numpy()
             batch_preds.append(batch_pred)
     
-    return batch_preds,candidate_trajs,candidate_weights,best_candiates,src_trajs
+    return batch_preds,candidate_trajs,candidate_weights,best_candiates,best_candiates_weights,src_trajs
 
 
 def inference(test_dl, model,device = device_test,sample='True',add_features = False,mixtures = 3,enc_seq = 8,dec_seq=12, mode='feed',normalized = True,loss_mode ='mdn',mean=0,std=0,post_process=True, db=False):
@@ -333,14 +334,16 @@ def inference(test_dl, model,device = device_test,sample='True',add_features = F
             src_ev.append(val_batch['src'])
             # gts_ev.append(val_batch['trg'][:, :, 0:2])
             # batch_gt = val_batch['trg'][:, :, 0:2].to(device).cpu().numpy()
+            print("TYPEEEEEEEEEEEEEEE:" ,type(val_batch))
+           
 
             if (normalized):
                 inp_val=(val_batch['src'][:,1:,2:4].to(device)-mean.to(device))/std.to(device)
                 # target_val=(val_batch['trg'][:,:-1,2:4].to(device)-mean.to(device))/std.to(device)
                 # y_val = (val_batch['trg'][:, :, 2:4].to(device)-mean.to(device))/std.to(device)
 
-                input_valc = torch.sqrt(torch.square(val_batch['src'][:,1:,2].to(device)) + torch.square(val_batch['src'][:,1:,3].to(device))).unsqueeze(-1)
-                input_val = torch.cat((inp_val,input_valc),-1)
+                # input_valc = torch.sqrt(torch.square(val_batch['src'][:,1:,2].to(device)) + torch.square(val_batch['src'][:,1:,3].to(device))).unsqueeze(-1)
+                # input_val = torch.cat((inp_val,input_valc),-1)
 
             else :
                 inp_val = val_batch['src'][:,1:,2:4].to(device)
@@ -365,8 +368,9 @@ def inference(test_dl, model,device = device_test,sample='True',add_features = F
 
             tgt_val_mask = generate_square_mask(dim_trg = dec_seq ,dim_src = enc_seq, mask_type="tgt").to(device)
             
-
-
+           
+            print("TYPEEEEEEEEEEEEEEE:" ,type(input_val))
+            print("lllllllllllllllllllllllll:" ,len(input_val),len(input_val[0]),len(input_val[0][0]))
             pi, sigma_x,sigma_y, mu_x , mu_y,decoder_out = model(input_val,tgt_val,tgt_mask = tgt_val_mask)
 
             mus = torch.cat((mu_x.unsqueeze(-1),mu_y.unsqueeze(-1)),-1)

@@ -1,5 +1,15 @@
 import torch
 
+class cfg_zed:
+    safe_color =  [0, 255, 0]
+    crossing_color = [255, 0, 0]
+    danger_cross = [0, 125, 125]
+    danger_color = [0, 0, 255]
+    line_thickness = 2
+    safe_distance = 1
+    safe_distance_lvl2 = 2
+    frame_rate = 10
+    max_cross_detection = 15  # maximum distance where crossing path is relavant
 class Args:  # Dataset areguments
     val_size = 0   # validation dataset needed
     dataset_folder = 'datasets'#'datasets'#'sample'#
