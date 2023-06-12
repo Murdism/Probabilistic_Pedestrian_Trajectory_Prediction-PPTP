@@ -1,4 +1,5 @@
 import numpy as np
+
 import torch
 import torch.nn as nn 
 import math
@@ -622,3 +623,43 @@ class Dataset(torch.utils.data.Dataset):
 
         
 
+class person:
+    def __init__(self,id,point_box,bbox,dist,height,frame_rate=15): # takes the id and first bounding box of the detected person
+        self.id = id
+        self.input_size = 8          # input size for point based is 8 frames
+        self.index = self.input_size-1 #self.input_size-1
+        self.distance = dist
+        self.height = height
+        self.bounding = bbox
+        self.history = np.zeros((self.input_size, 4)) # 6 parameters position(x,y)velocity(x,y),acceleration(x,y) 
+        # self.history = [[0]*4]*self.input_size
+        # self.his_np = np.zeros((self.input_size, 4))
+        self.dt = 4  #1/frame_rate            # change in time
+        self.add_box(point_box)
+   
+    def derivative(self,x, dt=1):
+        not_nan_mask = ~np.isnan(x)
+        masked_x = x[not_nan_mask]
+
+        if masked_x.shape[-1] < 2:
+            return np.zeros_like(x)
+        dx = np.full_like(x, np.nan)
+    
+        dx[not_nan_mask] = np.ediff1d(masked_x, to_begin=(masked_x[1] - masked_x[0]))#/ self.dt
+        
+        return dx
+             
+
+    def add_box(self,box):
+        for j in range (self.index,self.input_size-1):
+            self.history[j] =  self.history[j+1]
+        self.history[self.input_size-1] = box
+
+        if self.index < self.input_size-1:
+            self.history[self.input_size-1][2] = self.history[self.input_size-1][0]- self.history[self.input_size-2][0]
+            self.history[self.input_size-1][3] = self.history[self.input_size-1][1]- self.history[self.input_size-2][1]
+        # self.history[self.input_size-1][4] = self.history[self.input_size-1][0]- self.history[self.input_size-2][0]
+        # self.history[self.input_size-1][5] = self.history[self.input_size-1][1]- self.history[self.input_size-2][1]
+        #print("HISTORY:", self.history)
+        if self.index !=0: 
+            self.index-=1       

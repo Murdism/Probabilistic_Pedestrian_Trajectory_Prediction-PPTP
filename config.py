@@ -8,7 +8,8 @@ class cfg_zed:
     line_thickness = 2
     safe_distance = 1
     safe_distance_lvl2 = 2
-    frame_rate = 10
+    frame_rate = 15
+    data_rate = 5 # rate at which position of pedestrian is rendered
     max_cross_detection = 15  # maximum distance where crossing path is relavant
 class Args:  # Dataset areguments
     val_size = 0   # validation dataset needed
