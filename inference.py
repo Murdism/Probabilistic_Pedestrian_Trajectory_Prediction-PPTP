@@ -13,7 +13,6 @@ from config import CFG ,Args,cfg_zed
 from utils import person
 from train import train_attn_mdn 
 from model import Attention_GMM
-import pyzed.sl as sl
 
 #################################################################   ZED CAMERA ###############################################################
 def train(train_dl,val_dl,test_dl):
@@ -92,6 +91,7 @@ def train(train_dl,val_dl,test_dl):
     return attn_mdn
 
 def infer_real_time(attn_mdn,device,add_features,mean,std,pf,rate=cfg_zed.data_rate,normalized=True,enc_seq = 8,dec_seq=12):
+    import pyzed.sl as sl
     # Create a Camera object
     zed = sl.Camera()
     zed_pose = sl.Pose()
@@ -292,10 +292,25 @@ def infer_real_time(attn_mdn,device,add_features,mean,std,pf,rate=cfg_zed.data_r
     zed.close()
 
 
+def infer_simulation(attn_mdn,device,add_features,mean,std,pf,data_rate=cfg_zed.data_rate,normalized=True,enc_seq = 8,dec_seq=12):
+    from pedestrian_input import PedestrianPast,MarkerBase
+    import rospy
+    rospy.init_node('pedestrian_marker')
+    points = 8
+    frequency = 2
+    pedestrians = []
+    pedestrians.append(PedestrianPast("actor1", points))
+    pedestrians.append(PedestrianPast("actor2", points))
+
+    Base = MarkerBase(pedestrians, frequency, points)
+    Base.predictor(attn_mdn,device,add_features,mean,std,pf,data_rate=cfg_zed.data_rate,normalized=True,enc_seq = 8,dec_seq=12)
+    Base.start()
+    
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Runs Testing/Inference based on mode!')
-    parser.add_argument('-md','--mode',default=Args.mode,help='Enable mode ->train/test/inference')
+    parser.add_argument('-md','--mode',default=Args.mode,help='Enable mode ->train/test/inference/simulation')
     parser.add_argument('-rt','--real-time', action='store_true', default=Args.real_time,help='Enable Inference mode real_time/dataset -> inference no real time means normal testing without error output (Faster)')
     parser.add_argument('-mpt','--model_path',default=Args.model_path,help='trained model path')
     parser.add_argument('-d','--device',default=CFG.device,help='Cuda Device')
@@ -325,19 +340,22 @@ if __name__ == '__main__':
 
         if(args.mode=='train'):
             print("Preparing Model For Training ...")
-            #attn_mdn = train(train_dl,val_dl,test_dl)
+    
+           #attn_mdn = train(train_dl,val_dl,test_dl)
     else:
         print("Loading Model For Inference ...")
         PATH = args.model_path
         print("MODEL PATH: ",PATH)
         attn_mdn = torch.load(PATH).to(args.device)
         print("Model Loaded!")
-
+    
     # Count the number of parameters
     num_params = sum(p.numel() for p in attn_mdn.parameters() if p.requires_grad)
     print(f"The model has {num_params} parameters.")
 
-    if args.real_time:
+    if (args.mode=='simulation'):
+        infer_simulation(attn_mdn,args.device,args.add_features,mean,std,args.pformat)
+    elif args.real_time:
         print("REAL_TIME PREDICTION")
         infer_real_time(attn_mdn,args.device,args.add_features,mean,std,args.pformat)
     

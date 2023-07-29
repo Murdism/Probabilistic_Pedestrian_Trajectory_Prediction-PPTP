@@ -1,5 +1,8 @@
 import torch
-
+class ROS_PARAMS:
+    ped_frequency = 2
+    ped_num = 2
+    ped_points = 8
 class cfg_zed:
     safe_color =  [0, 255, 0]
     crossing_color = [255, 0, 0]
@@ -19,7 +22,7 @@ class Args:  # Dataset areguments
     preds = 12
     verbose = 2
     delim = '\t'
-    mode = 'inference' #'test'  # 'train'
+    mode = 'simulation'#inference' #'test'  # 'train'
     real_time = True
     loss_mode = "mdn" # "msq","mdn","combined","pair_wise"
     model_path = "saved_models/model_V_zara2_71_H4_E3_032_070.pt"#"saved_models/model_II_zara2_54_32_70_Final.pt"#$"saved_models/model_V_zara1_47_H4_E3_042_092.pt"#"saved_models/model_II_zara2_54_32_70_Final.pt"#model_II_zara2_54_32_70_Final.pt"
