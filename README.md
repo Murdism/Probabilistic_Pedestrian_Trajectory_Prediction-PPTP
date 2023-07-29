@@ -48,6 +48,9 @@ Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE an
 - MODEL III is mdn and msq loss
 
 [Download Pre-Trained](https://drive.google.com/file/d/13So1tsDC6gm8ULDtRoBD8UJoHgbRMSir/view?usp=sharing)
+[Download Pre-Trained Zara2](https://drive.google.com/drive/folders/1A48uyoe4_8Z8TUEoYxXyvjJqJrvBxoZ1?usp=sharing)
+[No request](https://drive.google.com/drive/folders/1A48uyoe4_8Z8TUEoYxXyvjJqJrvBxoZ1?usp=drive_link)
+
 ## Configuration 
 To train and test just run the *GMM_Transformer.ipynb* with different configuration from *config.py*
 
@@ -73,8 +76,8 @@ Including the number of heads of transformer,number of batchs, path of model (to
   - *class CFG* : num_heads,num_encoders,num_epochs_num_batchs,num_features ...etc.
   - *class Args* : change mode to 'test', use model_path to use pre-trained model 
 
-
-
+## For simulation
+- use zara2 pre-trained model
 # SOURCES
 [MDN_Thesis](https://github.com/axelbrando/Mixture-Density-Networks-for-distribution-and-uncertainty-estimation/blob/master/MDN-DNN-Regression.ipynb)
 
