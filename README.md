@@ -47,7 +47,7 @@ Model_x_y_z --> Here, x represents number of epochs while x and y are the ADE an
 - MODEL II is mdn loss only 
 - MODEL III is mdn and msq loss
 
-- Contact Authours for Pre-Trained Model
+* Contact Authours for Pre-Trained Model
 
 
 ## Configuration 
