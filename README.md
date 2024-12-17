@@ -77,18 +77,18 @@ Including the number of heads of transformer,number of batchs, path of model (to
 
 
 # REFERENCE
-If you find this work useful please cite the following paper:
-@INPROCEEDINGS{Murad2023TransformerBasedMP,
-  author={Mebrahtu, Murad and Araia, Awet and Ghebreslasie, Abiel and Dias, Jorge and Khonji, Majid},
-  booktitle={2023 21st International Conference on Advanced Robotics (ICAR)}, 
-  title={Transformer-Based Multi-Modal Probabilistic Pedestrian Prediction for Risk-Aware Autonomous Vehicle Navigation}, 
-  year={2023},
-  volume={},
-  number={},
-  pages={652-659},
-  keywords={Pedestrians;Stochastic processes;Predictive models;Probabilistic logic;Transformers;Behavioral sciences;Autonomous vehicles},
-  doi={10.1109/ICAR58858.2023.10436505}
-  }
+If you find this work useful please cite the following paper:  
+@INPROCEEDINGS{Murad2023TransformerBasedMP,  
+  author={Mebrahtu, Murad and Araia, Awet and Ghebreslasie, Abiel and Dias, Jorge and Khonji, Majid},  
+  booktitle={2023 21st International Conference on Advanced Robotics (ICAR)},   
+  title={Transformer-Based Multi-Modal Probabilistic Pedestrian Prediction for Risk-Aware Autonomous Vehicle Navigation},   
+  year={2023},  
+  volume={},  
+  number={},  
+  pages={652-659},  
+  keywords={Pedestrians;Stochastic processes;Predictive models;Probabilistic logic;Transformers;Behavioral sciences;Autonomous vehicles},  
+  doi={10.1109/ICAR58858.2023.10436505}  
+  }  
 # SOURCES
 [MDN_Thesis](https://github.com/axelbrando/Mixture-Density-Networks-for-distribution-and-uncertainty-estimation/blob/master/MDN-DNN-Regression.ipynb)
 
