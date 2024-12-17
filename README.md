@@ -79,7 +79,8 @@ Including the number of heads of transformer,number of batchs, path of model (to
 If you find this work useful please cite the following paper:  
 
 
-``` @INPROCEEDINGS{Murad2023TransformerBasedMP,  
+```
+@INPROCEEDINGS{Murad2023TransformerBasedMP,  
   author={Mebrahtu, Murad and Araia, Awet and Ghebreslasie, Abiel and Dias, Jorge and Khonji, Majid},  
   booktitle={2023 21st International Conference on Advanced Robotics (ICAR)},   
   title={Transformer-Based Multi-Modal Probabilistic Pedestrian Prediction for Risk-Aware Autonomous Vehicle Navigation},   
